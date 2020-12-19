@@ -45,3 +45,5 @@ console.log(testDiv);
 console.log(dom.next(testDiv));
 
 console.log(dom.previous(testDiv1));
+
+dom.each(testDiv, (n) => console.log(n));
