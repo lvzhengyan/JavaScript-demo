@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件捕获或冒泡</title>
+    <style>
+        ::-webkit-scrollbar {
+            width: 0 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="x">很长
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+        <div>1</div>
+    </div>
+    <script>
+        x.addEventListener('wheel', (e) => {
+            e.preventDefault()
+        })
+        x.addEventListener('touchstart', (e) => {
+            e.preventDefault()
+        })
+    </script>
+</body>
+
+</html>

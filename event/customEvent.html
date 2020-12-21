@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义事件</title>
+</head>
+
+<body>
+    <div id="div1">
+        <button id="button1">点击触发 love 事件</button>
+    </div>
+    <script>
+        // 事件绑定 API
+        /*
+            baba.addEventListener('click', fn, bool)
+            如果 bool 不传或者为 falsy，就让 fn 走冒泡的过程，否则是捕获的过程
+            捕获总是在冒泡前面执行，先捕获在冒泡
+
+            e.stopPropagation 取消冒泡
+            e.preventDefault() 阻止默认事件
+
+            e.target 是用户点击的
+            e.currentTarget 是开发者监听的
+
+            Bubbles 表示是否冒泡，所有冒泡都可以取消
+            Cancelable 表示是否开发者是否可以阻止默认事件，cancelable 与冒泡无关
+        */
+
+        button1.addEventListener('click', () => {
+            const event = new CustomEvent('haha', {
+                detail: {
+                    name: 'haha',
+                    age: 18
+                },
+                bubbles: true,
+                cancelable: false,
+            })
+            button1.dispatchEvent(event)
+        })
+
+        button1.addEventListener('haha', (e) => {
+            console.log('haha事件触发了')
+            console.log(e.detail);
+        })
+    </script>
+</body>
+
+</html>
