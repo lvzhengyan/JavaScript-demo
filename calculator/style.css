@@ -1,0 +1,115 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+input {
+	background: none;
+	outline: none;
+	border: none;
+}
+
+button {
+	margin: 0;
+	padding: 0;
+	border: 1px solid transparent;
+	outline: none;
+}
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+}
+
+#calculator {
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	background-color: #000000;
+}
+
+@media (min-width: 1025px) {
+	#calculator {
+		width: 375px;
+		height: 812px;
+	}
+}
+
+#show-wrapper {
+	display: flex;
+	flex-direction: column-reverse;
+	align-items: flex-end;
+	height: 40%;
+	margin-bottom: 1rem;
+}
+
+.show {
+	padding-left: 1rem;
+	padding-right: 1rem;
+	color: #ffffff;
+	font-size: 5.5rem;
+	height: 5.5rem;
+	width: 100%;
+	text-align: right;
+}
+
+#key-wrapper {
+	height: 60%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
+	height: 25%;
+}
+
+.col {
+	flex: 1;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid #ffffff;
+	font-size: 2rem;
+	color: #ffffff;
+	background-color: rgb(52, 52, 52);
+}
+
+.zero {
+	flex: 2;
+}
+
+.ac,
+.sign,
+.percent {
+	background-color: rgb(146, 146, 146);
+}
+
+.equal,
+.operator {
+	background-color: rgb(247, 159, 49);
+}
+
+.operator:hover {
+	color: rgb(247, 159, 49);
+	background-color: #ffffff;
+}
+
+/* 调整显示屏字体大小 */
+.active7 {
+	font-size: 4.5rem;
+}
+
+.active8 {
+	font-size: 4rem;
+}
+
+.active9 {
+	font-size: 3.6rem;
+}
