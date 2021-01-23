@@ -100,7 +100,7 @@
 			const value = e.target.value;
 			if (this.show.value === "错误") {
 				this.show.value = "0";
-				this.calculateArr = [];
+				this.model.calculateArr = [];
 			}
 			// 点击的是数字或小数点按钮
 			if (!isNaN(value) || value === ".") {
@@ -277,8 +277,8 @@
 					value = this.formatNumber(value.toString());
 				}
 				this.show.value = value;
-				this.adjustFontSize();
 			}
+			this.adjustFontSize();
 		},
 
 		/**
@@ -320,6 +320,7 @@
 		adjustFontSize: function () {
 			let inputLen = this.show.value.replace(/[,.]/g, "").length;
 			let classShow = this.show.className.slice(0, 4);
+
 			if (inputLen <= 6) {
 				this.show.className = classShow;
 			} else if (inputLen === 7) {
@@ -328,6 +329,11 @@
 				this.show.className = classShow + " active8";
 			} else if (inputLen === 9) {
 				this.show.className = classShow + " active9";
+			}
+
+			// 显示框为 “错误” 时调整字体大小
+			if (this.show.value === "错误") {
+				this.show.className = classShow + " activeError";
 			}
 		},
 
