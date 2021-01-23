@@ -17,32 +17,32 @@
 
 			KeyWrapper.innerHTML = `
                 <div class="row">
-                    <button class="col ac" value="ac">AC</button>
-                    <button class="col sign" value="+/-">+/-</button>
-                    <button class="col percent" value="%">%</button>
+                    <button class="col function-btn" value="ac">AC</button>
+                    <button class="col function-btn" value="+/-">+/-</button>
+                    <button class="col function-btn" value="%">%</button>
                     <button class="col operator" value="/">÷</button>
                 </div>
                 <div class="row">
-                    <button class="col" value="7">7</button>
-                    <button class="col" value="8">8</button>
-                    <button class="col" value="9">9</button>
+                    <button class="col number-btn" value="7">7</button>
+                    <button class="col number-btn" value="8">8</button>
+                    <button class="col number-btn" value="9">9</button>
                     <button class="col operator" value="*">×</button>
                 </div>
                 <div class="row">
-                    <button class="col" value="4">4</button>
-                    <button class="col" value="5">5</button>
-                    <button class="col" value="6">6</button>
+                    <button class="col number-btn" value="4">4</button>
+                    <button class="col number-btn" value="5">5</button>
+                    <button class="col number-btn" value="6">6</button>
                     <button class="col operator" value="-">-</button>
                 </div>
                 <div class="row">
-                    <button class="col" value="1">1</button>
-                    <button class="col" value="2">2</button>
-                    <button class="col" value="3">3</button>
+                    <button class="col number-btn" value="1">1</button>
+                    <button class="col number-btn" value="2">2</button>
+                    <button class="col number-btn" value="3">3</button>
                     <button class="col operator" value="+">+</button>
                 </div>
                 <div class="row">
-                    <button class="col zero" value="0">0</button>
-                    <button class="col" value=".">.</button>
+                    <button class="col number-btn zero" value="0">0</button>
+                    <button class="col number-btn" value=".">.</button>
                     <button class="col equal" value="=">=</button>
                 </div>
             `;
@@ -62,8 +62,8 @@
 		this.view = new View(element);
 		this.model = new Model();
 		this.show = document.querySelector(".show");
-		this.btn = document.querySelectorAll("button");
 		this.KeyWrapper = document.querySelector("#key-wrapper");
+		this.operator = "";
 		this.init();
 	};
 
@@ -74,9 +74,21 @@
 		},
 
 		bindEvent: function () {
+			let width = document.documentElement.clientWidth;
+			let start = width <= 1024 ? "touchstart" : "mousedown";
+			let end = width <= 1024 ? "touchend" : "mouseup";
+
 			// 利用冒泡机制为所有button添加点击事件
 			this.KeyWrapper.addEventListener("click", e => {
 				this.clickEvent(e);
+			});
+
+			// 添加点击效果
+			this.KeyWrapper.addEventListener(start, e => {
+				this.checkedBtn(e);
+			});
+			this.KeyWrapper.addEventListener(end, e => {
+				this.releaseBtn(e);
 			});
 		},
 
@@ -86,6 +98,10 @@
 		 */
 		clickEvent: function (e) {
 			const value = e.target.value;
+			if (this.show.value === "错误") {
+				this.show.value = "0";
+				this.calculateArr = [];
+			}
 			// 点击的是数字或小数点按钮
 			if (!isNaN(value) || value === ".") {
 				this.model.symbolFlag = true;
@@ -126,7 +142,7 @@
 							if (value === ".") {
 								this.show.value += value;
 							} else {
-								this.show.value = this.formatShow((this.show.value + value).replace(/,/g, ""));
+								this.show.value = this.formatToThousandths((this.show.value + value).replace(/,/g, ""));
 								this.adjustFontSize(this.show.value);
 							}
 						}
@@ -186,7 +202,7 @@
 		saveSymbol: function (value) {
 			// 符号键按了多次，以最后那一次为准
 			if (!this.model.symbolFlag) {
-				// 直接输入符号键的情况
+				// 直接输入符号键进行计算的情况
 				if (this.model.calculateArr.length === 0) {
 					this.model.calculateArr = this.model.calculateArr.concat(["0", value]);
 				}
@@ -200,7 +216,7 @@
 				let calculation = this.model.calculateArr.slice(0, this.model.calculateArr.length - 1);
 				this.doCalculate(calculation);
 			} else {
-				this.show.value = this.model.calculateArr[this.model.calculateArr.length - 2] || "0";
+				this.show.value = (this.model.calculateArr[this.model.calculateArr.length - 2] && this.formatToThousandths(this.model.calculateArr[this.model.calculateArr.length - 2])) || "0";
 			}
 			this.model.equalsSign = true;
 			this.model.symbolFlag = false;
@@ -224,11 +240,11 @@
 		 * @param {Number} value
 		 */
 		formatResult: function (value) {
-			if (value === Infinity || value === -Infinity) {
+			if (value === Infinity || value === -Infinity || isNaN(value)) {
 				this.show.value = "错误";
 			} else {
-				// 处理结果加上小数点总位数 10 位的情况
 				let maxLen = 9;
+				// 消除小数点影响显示字符长度的情况
 				if (value.toString().indexOf(".") !== -1) {
 					++maxLen;
 				}
@@ -243,8 +259,8 @@
 						tempLen = tempLen - 1;
 					}
 					if (tempLen <= maxLen) {
-						value = this.toNonExponential(parseFloat(temp));
-						if (value.length > maxLen) {
+						value = parseFloat(temp);
+						if (value.toString().length > maxLen) {
 							value = parseFloat(value).toExponential(6);
 						}
 					} else if (tempLen === maxLen + 1) {
@@ -256,7 +272,7 @@
 					}
 				}
 				if (value.toString().indexOf("e") === -1) {
-					value = this.formatShow(value.toString());
+					value = this.formatToThousandths(value.toString());
 				} else {
 					value = this.formatNumber(value.toString());
 				}
@@ -277,7 +293,7 @@
 		 * 千分位格式化
 		 * @param {String} showValue
 		 */
-		formatShow: function (showValue) {
+		formatToThousandths: function (showValue) {
 			let integral;
 			let fractional;
 			let integralFormat;
@@ -315,16 +331,30 @@
 			}
 		},
 
-		/**
-		 * 科学计数法转数字
-		 * @param {Number} num
-		 */
-		toNonExponential: function (num) {
-			var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
-			return num.toFixed(Math.max(0, (m[1] || "").length - m[2]));
+		checkedBtn: function (e) {
+			let checkedOperatorBtn = Array.from(document.querySelectorAll("button"));
+			checkedOperatorBtn = checkedOperatorBtn.forEach(node => {
+				if (node.className.indexOf("checkedOperator") !== -1) {
+					node.className = node.className.replace(" checkedOperator", "");
+				}
+			});
+			if (e.target.className.match(/function-btn/)) {
+				e.target.className += " checkedFunction";
+			} else if (e.target.className.match(/number-btn/)) {
+				e.target.className += " checkedNumber";
+			} else if (e.target.className.match(/operator/)) {
+				e.target.className += " checkedOperator";
+			} else {
+				e.target.className += " checkedEqual";
+			}
+		},
+
+		releaseBtn: function (e) {
+			e.target.className = e.target.className.replace(/ checkedFunction| checkedNumber| checkedEqual/, "");
 		},
 	};
 
+	// 初始 calculator 对象实例
 	new Calculator({
 		id: "calculator",
 	});
