@@ -1,15 +1,19 @@
-!(function () {
-	var View = function (element) {
+(function () {
+	let View = function (element) {
 		this.element = document.querySelector("#" + element.id);
 		this.render();
+		this.show = document.querySelector(`#${element.id} .show`);
+		this.KeyWrapper = document.querySelector(`#${element.id} .key-wrapper`);
 	};
 
 	View.prototype = {
 		render: function () {
-			var showWrapper = document.createElement("div");
-			var KeyWrapper = document.createElement("div");
-			showWrapper.id = "show-wrapper";
-			KeyWrapper.id = "key-wrapper";
+			let showWrapper = document.createElement("div");
+			let KeyWrapper = document.createElement("div");
+			let calWrapper = document.createElement("div");
+			showWrapper.className = "show-wrapper";
+			KeyWrapper.className = "key-wrapper";
+			calWrapper.className = "cal-wrapper";
 
 			showWrapper.innerHTML = `
                 <input class="show" type="text" value="0" disabled>
@@ -40,36 +44,35 @@
                     <button class="col number-btn" value="3">3</button>
                     <button class="col operator" value="+">+</button>
                 </div>
-                <div class="row">
-                    <button class="col number-btn zero" value="0">0</button>
-                    <button class="col number-btn" value=".">.</button>
-                    <button class="col equal" value="=">=</button>
+				<div class="last-row">
+					<button class="col number-btn zero" value="0">0</button>
+					<button class="col number-btn" value=".">.</button>
+					<button class="col equal" value="=">=</button>
                 </div>
-            `;
-			this.element.appendChild(showWrapper);
-			this.element.appendChild(KeyWrapper);
+			`;
+
+			calWrapper.appendChild(showWrapper);
+			calWrapper.appendChild(KeyWrapper);
+			this.element.appendChild(calWrapper);
 		},
 	};
 
-	var Model = function () {
+	let Model = function () {
 		this.res = "0";
 		this.calculateArr = [];
 		this.equalsSign = false;
 		this.symbolFlag = false;
 	};
 
-	var Calculator = function (element) {
+	let Calculator = function (element) {
 		this.view = new View(element);
 		this.model = new Model();
-		this.show = document.querySelector(".show");
-		this.KeyWrapper = document.querySelector("#key-wrapper");
-		this.operator = "";
 		this.init();
 	};
 
 	Calculator.prototype = {
 		init: function () {
-			this.show.value = "0";
+			this.view.show.value = "0";
 			this.bindEvent();
 		},
 
@@ -79,15 +82,15 @@
 			let end = width <= 1024 ? "touchend" : "mouseup";
 
 			// 利用冒泡机制为所有button添加点击事件
-			this.KeyWrapper.addEventListener("click", e => {
+			this.view.KeyWrapper.addEventListener("click", e => {
 				this.clickEvent(e);
 			});
 
 			// 添加点击效果
-			this.KeyWrapper.addEventListener(start, e => {
+			this.view.KeyWrapper.addEventListener(start, e => {
 				this.checkedBtn(e);
 			});
-			this.KeyWrapper.addEventListener(end, e => {
+			this.view.KeyWrapper.addEventListener(end, e => {
 				this.releaseBtn(e);
 			});
 		},
@@ -98,8 +101,8 @@
 		 */
 		clickEvent: function (e) {
 			const value = e.target.value;
-			if (this.show.value === "错误") {
-				this.show.value = "0";
+			if (this.view.show.value === "错误") {
+				this.view.show.value = "0";
 				this.model.calculateArr = [];
 			}
 			// 点击的是数字或小数点按钮
@@ -108,42 +111,42 @@
 
 				// 判断是否是加减乘除和等号后直接输入的数字
 				if (this.model.equalsSign) {
-					this.show.value = "0";
+					this.view.show.value = "0";
 					this.model.equalsSign = false;
 				}
 
-				if (this.show.value === "0") {
+				if (this.view.show.value === "0") {
 					if (value === ".") {
-						this.show.value = "0" + value;
+						this.view.show.value = "0" + value;
 					} else {
-						this.show.value = value;
+						this.view.show.value = value;
 					}
-				} else if (this.show.value === "-0") {
-					if (this.show.value.indexOf(".") !== -1) {
+				} else if (this.view.show.value === "-0") {
+					if (this.view.show.value.indexOf(".") !== -1) {
 						if (value !== ".") {
-							this.show.value += value;
+							this.view.show.value += value;
 						}
 					} else {
 						if (value === ".") {
-							this.show.value = "-0" + value;
+							this.view.show.value = "-0" + value;
 						} else {
-							this.show.value += value;
-							this.show.value = "-" + value;
+							this.view.show.value += value;
+							this.view.show.value = "-" + value;
 						}
 					}
 				} else {
-					if (this.show.value.replace(/[,.]/g, "").length < 9) {
-						if (this.show.value.indexOf(".") !== -1) {
+					if (this.view.show.value.replace(/[,.]/g, "").length < 9) {
+						if (this.view.show.value.indexOf(".") !== -1) {
 							if (value !== ".") {
-								this.show.value += value;
+								this.view.show.value += value;
 								this.adjustFontSize();
 							}
 						} else {
 							if (value === ".") {
-								this.show.value += value;
+								this.view.show.value += value;
 							} else {
-								this.show.value = this.formatToThousandths((this.show.value + value).replace(/,/g, ""));
-								this.adjustFontSize(this.show.value);
+								this.view.show.value = this.formatToThousandths((this.view.show.value + value).replace(/,/g, ""));
+								this.adjustFontSize(this.view.show.value);
 							}
 						}
 					}
@@ -164,30 +167,30 @@
 						break;
 					case "+/-":
 						if (this.model.equalsSign) {
-							this.show.value = "0";
+							this.view.show.value = "0";
 							this.model.equalsSign = false;
 						}
-						if (this.show.value[0] === "-") {
-							this.show.value = this.show.value.slice(1);
+						if (this.view.show.value[0] === "-") {
+							this.view.show.value = this.view.show.value.slice(1);
 						} else {
-							this.show.value = "-" + this.show.value;
+							this.view.show.value = "-" + this.view.show.value;
 						}
 						this.adjustFontSize();
 						break;
 					case "%":
-						let percentValue = parseFloat(this.show.value.replace(/,/g, "")) / 100;
+						let percentValue = parseFloat(this.view.show.value.replace(/,/g, "")) / 100;
 						this.formatResult(percentValue);
 						this.adjustFontSize();
 						this.model.equalsSign = true;
 						break;
 					case "=":
-						this.model.calculateArr.push(this.show.value.replace(/,/g, ""));
+						this.model.calculateArr.push(this.view.show.value.replace(/,/g, ""));
 						this.doCalculate(this.model.calculateArr);
 						this.model.calculateArr = [];
 						this.model.equalsSign = true;
 						break;
 					case "ac":
-						this.show.value = "0";
+						this.view.show.value = "0";
 						this.model.calculateArr = [];
 						this.adjustFontSize();
 						break;
@@ -208,7 +211,7 @@
 				}
 				this.model.calculateArr[this.model.calculateArr.length - 1] = value;
 			} else {
-				this.model.calculateArr.push(this.show.value.replace(/,/g, ""));
+				this.model.calculateArr.push(this.view.show.value.replace(/,/g, ""));
 				this.model.calculateArr.push(value);
 			}
 			// 预计算
@@ -216,7 +219,7 @@
 				let calculation = this.model.calculateArr.slice(0, this.model.calculateArr.length - 1);
 				this.doCalculate(calculation);
 			} else {
-				this.show.value = (this.model.calculateArr[this.model.calculateArr.length - 2] && this.formatToThousandths(this.model.calculateArr[this.model.calculateArr.length - 2])) || "0";
+				this.view.show.value = (this.model.calculateArr[this.model.calculateArr.length - 2] && this.formatToThousandths(this.model.calculateArr[this.model.calculateArr.length - 2])) || "0";
 			}
 			this.model.equalsSign = true;
 			this.model.symbolFlag = false;
@@ -241,7 +244,7 @@
 		 */
 		formatResult: function (value) {
 			if (value === Infinity || value === -Infinity || isNaN(value)) {
-				this.show.value = "错误";
+				this.view.show.value = "错误";
 			} else {
 				let maxLen = 9;
 				// 消除小数点影响显示字符长度的情况
@@ -276,7 +279,7 @@
 				} else {
 					value = this.formatNumber(value.toString());
 				}
-				this.show.value = value;
+				this.view.show.value = value;
 			}
 			this.adjustFontSize();
 		},
@@ -318,22 +321,22 @@
 		 * 调整字体大小
 		 */
 		adjustFontSize: function () {
-			let inputLen = this.show.value.replace(/[,.]/g, "").length;
-			let classShow = this.show.className.slice(0, 4);
+			let inputLen = this.view.show.value.replace(/[,.]/g, "").length;
+			let classShow = this.view.show.className.slice(0, 4);
 
 			if (inputLen <= 6) {
-				this.show.className = classShow;
+				this.view.show.className = classShow;
 			} else if (inputLen === 7) {
-				this.show.className = classShow + " active7";
+				this.view.show.className = classShow + " active7";
 			} else if (inputLen === 8) {
-				this.show.className = classShow + " active8";
+				this.view.show.className = classShow + " active8";
 			} else if (inputLen === 9) {
-				this.show.className = classShow + " active9";
+				this.view.show.className = classShow + " active9";
 			}
 
 			// 显示框为 “错误” 时调整字体大小
-			if (this.show.value === "错误") {
-				this.show.className = classShow + " activeError";
+			if (this.view.show.value === "错误") {
+				this.view.show.className = classShow + " activeError";
 			}
 		},
 
@@ -350,7 +353,7 @@
 				e.target.className += " checkedNumber";
 			} else if (e.target.className.match(/operator/)) {
 				e.target.className += " checkedOperator";
-			} else {
+			} else if (e.target.className.match(/equal/)) {
 				e.target.className += " checkedEqual";
 			}
 		},
@@ -360,8 +363,11 @@
 		},
 	};
 
-	// 初始 calculator 对象实例
 	new Calculator({
 		id: "calculator",
 	});
+
+	// new Calculator({
+	// 	id: "cal",
+	// });
 })();

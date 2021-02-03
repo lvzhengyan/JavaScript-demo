@@ -15,6 +15,10 @@ button {
 	padding: 0;
 	border: 1px solid transparent;
 	outline: none;
+	border-color: transparent;
+	box-shadow: none;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -23,25 +27,23 @@ body {
 	height: 100%;
 }
 
-#calculator {
+body > div {
+	width: 100%;
+	height: 100%;
+}
+
+.cal-wrapper{
 	display: flex;
 	height: 100%;
 	flex-direction: column;
 	background-color: #000000;
 }
 
-@media (min-width: 1025px) {
-	#calculator {
-		width: 375px;
-		height: 812px;
-	}
-}
-
-#show-wrapper {
+.show-wrapper {
 	display: flex;
 	flex-direction: column-reverse;
 	align-items: flex-end;
-	height: 40%;
+	height: 30%;
 	margin-bottom: 1rem;
 }
 
@@ -55,39 +57,51 @@ body {
 	text-align: right;
 }
 
-#key-wrapper {
-	height: 60%;
+.key-wrapper {
+	height: 70%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	padding: 4.5rem 1.5rem;
 }
 
 .row {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	width: 100%;
-	height: 25%;
 }
 
 .col {
-	flex: 1;
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
-	border: 1px solid #ffffff;
+	height: 4.5rem;
+	width: 4.5rem;
+	border-radius: 50%;
 	font-size: 2rem;
 	color: #ffffff;
-	background-color: rgb(52, 52, 52);
+	background-color: #000000;
+}
+
+.last-row {
+	display: grid;
+	grid-template-columns: repeat(4, 4.5rem);
+	justify-content: space-between;
 }
 
 .zero {
-	flex: 2;
+	width: 100%;
+	grid-column-start: 1;
+	grid-column-end: 3;
+	border-radius: 2.25rem;
 }
 
-.ac,
-.sign,
-.percent {
+.number-btn {
+	background-color: rgb(52, 52, 52);
+}
+
+.function-btn {
+	color: #000000;
 	background-color: rgb(146, 146, 146);
 }
 
@@ -96,20 +110,69 @@ body {
 	background-color: rgb(247, 159, 49);
 }
 
-.operator:hover {
-	color: rgb(247, 159, 49);
-	background-color: #ffffff;
-}
-
 /* 调整显示屏字体大小 */
 .active7 {
 	font-size: 4.5rem;
 }
 
-.active8 {
+.active8,
+.activeError {
 	font-size: 4rem;
 }
 
 .active9 {
 	font-size: 3.6rem;
+}
+
+.checkedFunction {
+	background-color: #dddddd;
+}
+
+.checkedNumber {
+	background-color: #666666;
+}
+
+.checkedOperator {
+	color: rgb(247, 159, 49);
+	background-color: #ffffff;
+}
+
+.checkedEqual {
+	background-color: #ffcc00;
+}
+
+@media (min-width: 1025px) {
+	body {
+		display: flex;
+	}
+
+	.cal-wrapper {
+		width: 375px;
+		height: 812px;
+	}
+}
+
+@media(max-height: 736px) {
+	.key-wrapper {
+		padding: 2rem 1.5rem;
+	}
+}
+
+@media(max-height: 568px) {
+	.key-wrapper {
+		padding: 1.5rem;
+	}
+
+	.col {
+		width: 3.8rem;
+		height: 3.8rem;
+	}
+
+	.last-row {
+		grid-template-columns: repeat(4, 3.8rem);
+	}
+
+	.zero {
+		width: 100%;
+	}
 }
